@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-const imgConvert = '/Assets/convert.png';
-const imgLearnSign = '/Assets/learn-sign.jpg';
-const imgVideos = '/Assets/videos.png';
+import imgConvert from "../../Assets/convert.png";
+import imgLearnSign from "../../Assets/learn-sign.jpg";
+import imgVideos from "../../Assets/videos.png";
 
 function Services() {
   return (

@@ -1,15 +1,13 @@
 import '../App.css'
-import axios from 'axios';
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from 'react-router-dom'
 import Slider from 'react-input-slider';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-const xbot = '/Models/xbot/xbot.glb';
-const ybot = '/Models/ybot/ybot.glb';
-const xbotPic = '/Models/xbot/xbot.png';
-const ybotPic = '/Models/ybot/ybot.png';
+import xbot from '../Models/xbot/xbot.glb';
+import ybot from '../Models/ybot/ybot.glb';
+import xbotPic from '../Models/xbot/xbot.png';
+import ybotPic from '../Models/ybot/ybot.png';
 
 import * as words from '../Animations/words';
 import * as alphabets from '../Animations/alphabets';
@@ -17,26 +15,26 @@ import { defaultPose } from '../Animations/defaultPose';
 
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Button, Modal } from "react-bootstrap";
 
-import { baseURL } from '../Config/config'
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
-
-function Video() {
+function Convert() {
   const [text, setText] = useState("");
   const [bot, setBot] = useState(ybot);
   const [speed, setSpeed] = useState(0.1);
   const [pause, setPause] = useState(800);
-  const [invalidId, setInvalidId] = useState(false)
-  const [title, setTitle] = useState('')
-  const [desc, setDesc] = useState('')
-
-  const params = useParams()
 
   const componentRef = useRef({});
   const { current: ref } = componentRef;
 
-  let id = React.createRef();
+  let textFromAudio = React.createRef();
+  let textFromInput = React.createRef();
+
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+  } = useSpeechRecognition();
 
   useEffect(() => {
 
@@ -49,22 +47,19 @@ function Video() {
     ref.scene = new THREE.Scene();
     ref.scene.background = new THREE.Color(0xdddddd);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2);
-    ref.scene.add(ambientLight);
-
-    const spotLight = new THREE.SpotLight(0xffffff, 5);
+    const spotLight = new THREE.SpotLight(0xffffff, 2);
     spotLight.position.set(0, 5, 5);
     ref.scene.add(spotLight);
+    ref.renderer = new THREE.WebGLRenderer({ antialias: true });
 
     ref.camera = new THREE.PerspectiveCamera(
         30,
-        (window.innerWidth * 0.57) / Math.max(400, window.innerHeight - 70),
+        window.innerWidth * 0.57 / (window.innerHeight - 70),
         0.1,
         1000
     )
+    ref.renderer.setSize(window.innerWidth * 0.57, window.innerHeight - 70);
 
-    ref.renderer = new THREE.WebGLRenderer({ antialias: true });
-    ref.renderer.setSize(window.innerWidth * 0.57, Math.max(400, window.innerHeight - 70));
     document.getElementById("canvas").innerHTML = "";
     document.getElementById("canvas").appendChild(ref.renderer.domElement);
 
@@ -79,20 +74,15 @@ function Video() {
           if ( child.type === 'SkinnedMesh' ) {
             child.frustumCulled = false;
           }
-        });
+    });
         ref.avatar = gltf.scene;
         ref.scene.add(ref.avatar);
         defaultPose(ref);
       },
       (xhr) => {
-        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-      },
-      (error) => {
-        console.error('An error happened loading the model:', error);
+        console.log(xhr);
       }
     );
-
-    id.current.value=params.videoId
 
   }, [ref, bot]);
 
@@ -138,8 +128,9 @@ function Video() {
     ref.renderer.render(ref.scene, ref.camera);
   }
 
-  const sign = (str) => {
-    str = str.toUpperCase();
+  const sign = (inputRef) => {
+    
+    var str = inputRef.current.value.toUpperCase();
     var strWords = str.split(' ');
     setText('')
 
@@ -162,17 +153,12 @@ function Video() {
     }
   }
 
-  const animateFromID = () => {
-      const videoID = id.current.value;
-      axios.get(`${baseURL}/videos/${videoID}`).then((res) => {
-        console.log(res.data)
-        setTitle(res.data.title)
-        setDesc(res.data.desc)
-        sign(res.data.content);
-      }).catch(err => {
-        console.log(err)
-        setInvalidId(true)
-      });
+  const startListening = () =>{
+    SpeechRecognition.startListening({continuous: true});
+  }
+
+  const stopListening = () =>{
+    SpeechRecognition.stopListening();
   }
 
   return (
@@ -180,24 +166,34 @@ function Video() {
       <div className='row'>
         <div className='col-md-3'>
           <label className='label-style'>
-              Video ID
+            Processed Text
           </label>
-          <input ref={id} splaceholder='Video ID' className='w-100 input-style' />
-          <button onClick={animateFromID} className='btn btn-primary w-100 btn-style btn-start mb-3'>
-              Start Video
+          <textarea rows={3} value={text} className='w-100 input-style' readOnly />
+          <label className='label-style'>
+            Speech Recognition: {listening ? 'on' : 'off'}
+          </label>
+          <div className='space-between'>
+            <button className="btn btn-primary btn-style w-33" onClick={startListening}>
+              Mic On <i className="fa fa-microphone"/>
+            </button>
+            <button className="btn btn-primary btn-style w-33" onClick={stopListening}>
+              Mic Off <i className="fa fa-microphone-slash"/>
+            </button>
+            <button className="btn btn-primary btn-style w-33" onClick={resetTranscript}>
+              Clear
+            </button>
+          </div>
+          <textarea rows={3} ref={textFromAudio} value={transcript} placeholder='Speech input ...' className='w-100 input-style' />
+          <button onClick={() => {sign(textFromAudio)}} className='btn btn-primary w-100 btn-style btn-start'>
+            Start Animations
           </button>
-          <hr />
-          {title && 
-            <div className='d-flex flex-column justify-content-center align-items-center mt-3'>
-            <label className='h3'>{title}</label>
-            <label>{desc}</label>
-            <div className='w-100'>
-              <label className='label-style mt-4'>
-                Processed Text
-              </label>
-              <textarea rows={10} value={text} className='w-100 input-style mt-2' readOnly />
-              </div>
-          </div>}
+          <label className='label-style'>
+            Text Input
+          </label>
+          <textarea rows={3} ref={textFromInput} placeholder='Text input ...' className='w-100 input-style' />
+          <button onClick={() => {sign(textFromInput)}} className='btn btn-primary w-100 btn-style btn-start'>
+            Start Animations
+          </button>
         </div>
         <div className='col-md-7'>
           <div id='canvas'/>
@@ -217,7 +213,6 @@ function Video() {
             xmax={0.50}
             xstep={0.01}
             x={speed}
-            y={50} ymin={0} ymax={100} ystep={1} styles={{}}
             onChange={({ x }) => setSpeed(x)}
             className='w-100'
           />
@@ -230,25 +225,13 @@ function Video() {
             xmax={2000}
             xstep={100}
             x={pause}
-            y={50} ymin={0} ymax={100} ystep={1} styles={{}}
             onChange={({ x }) => setPause(x)}
             className='w-100'
           />
         </div>
       </div>
-      <Modal show={invalidId} onHide={() => setInvalidId(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Invalid Video ID</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Please make sure that the video ID that your have entered is valid!</Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={() => setInvalidId(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   )
 }
 
-export default Video;
+export default Convert;

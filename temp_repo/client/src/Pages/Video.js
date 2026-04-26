@@ -6,10 +6,10 @@ import Slider from 'react-input-slider';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-const xbot = '/Models/xbot/xbot.glb';
-const ybot = '/Models/ybot/ybot.glb';
-const xbotPic = '/Models/xbot/xbot.png';
-const ybotPic = '/Models/ybot/ybot.png';
+import xbot from '../Models/xbot/xbot.glb';
+import ybot from '../Models/ybot/ybot.glb';
+import xbotPic from '../Models/xbot/xbot.png';
+import ybotPic from '../Models/ybot/ybot.png';
 
 import * as words from '../Animations/words';
 import * as alphabets from '../Animations/alphabets';
@@ -49,22 +49,19 @@ function Video() {
     ref.scene = new THREE.Scene();
     ref.scene.background = new THREE.Color(0xdddddd);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2);
-    ref.scene.add(ambientLight);
-
-    const spotLight = new THREE.SpotLight(0xffffff, 5);
+    const spotLight = new THREE.SpotLight(0xffffff, 2);
     spotLight.position.set(0, 5, 5);
     ref.scene.add(spotLight);
 
     ref.camera = new THREE.PerspectiveCamera(
         30,
-        (window.innerWidth * 0.57) / Math.max(400, window.innerHeight - 70),
+        window.innerWidth*0.57 / (window.innerHeight - 70),
         0.1,
         1000
     )
 
     ref.renderer = new THREE.WebGLRenderer({ antialias: true });
-    ref.renderer.setSize(window.innerWidth * 0.57, Math.max(400, window.innerHeight - 70));
+    ref.renderer.setSize(window.innerWidth*0.57, window.innerHeight - 70);
     document.getElementById("canvas").innerHTML = "";
     document.getElementById("canvas").appendChild(ref.renderer.domElement);
 
@@ -79,16 +76,13 @@ function Video() {
           if ( child.type === 'SkinnedMesh' ) {
             child.frustumCulled = false;
           }
-        });
+    });
         ref.avatar = gltf.scene;
         ref.scene.add(ref.avatar);
         defaultPose(ref);
       },
       (xhr) => {
-        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-      },
-      (error) => {
-        console.error('An error happened loading the model:', error);
+        console.log(xhr);
       }
     );
 
@@ -217,7 +211,6 @@ function Video() {
             xmax={0.50}
             xstep={0.01}
             x={speed}
-            y={50} ymin={0} ymax={100} ystep={1} styles={{}}
             onChange={({ x }) => setSpeed(x)}
             className='w-100'
           />
@@ -230,7 +223,6 @@ function Video() {
             xmax={2000}
             xstep={100}
             x={pause}
-            y={50} ymin={0} ymax={100} ystep={1} styles={{}}
             onChange={({ x }) => setPause(x)}
             className='w-100'
           />
