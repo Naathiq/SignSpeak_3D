@@ -302,6 +302,11 @@ function Convert() {
                 {listening ? 'Listening...' : 'Off'}
               </span>
             </div>
+            {!SpeechRecognition.browserSupportsSpeechRecognition() && (
+              <div className="mb-4 text-xs text-red-600 bg-red-50 p-2 rounded-lg border border-red-200">
+                Your browser does not support speech recognition. Please try opening this app in a new tab using Chrome.
+              </div>
+            )}
             
             <div className='grid grid-cols-3 gap-2 mb-4'>
               <button 

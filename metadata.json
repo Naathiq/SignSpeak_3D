@@ -1,6 +1,8 @@
 {
-  "name": "",
-  "description": "",
-  "requestFramePermissions": [],
+  "name": "Sign Kit",
+  "description": "An Avatar based ISL Toolkit",
+  "requestFramePermissions": [
+    "microphone"
+  ],
   "majorCapabilities": []
 }
