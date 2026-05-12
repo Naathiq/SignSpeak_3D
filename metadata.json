@@ -2,7 +2,8 @@
   "name": "Sign Kit",
   "description": "An Avatar based ISL Toolkit",
   "requestFramePermissions": [
-    "microphone"
+    "microphone",
+    "camera"
   ],
   "majorCapabilities": []
 }

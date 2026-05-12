@@ -4,10 +4,8 @@ import Slider from 'react-input-slider';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-const xbot = '/Models/xbot/xbot.glb';
-const ybot = '/Models/ybot/ybot.glb';
-const xbotPic = '/Models/xbot/xbot.png';
-const ybotPic = '/Models/ybot/ybot.png';
+import xbot from '../Models/xbot/xbot.glb';
+import ybot from '../Models/ybot/ybot.glb';
 
 import * as words from '../Animations/words';
 import * as alphabets from '../Animations/alphabets';
@@ -214,18 +212,18 @@ function LearnSign() {
           <div className='bg-white p-6 rounded-2xl shadow-sm border border-gray-100'>
             <h3 className='text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4'>Select Avatar</h3>
             <div className='grid grid-cols-2 gap-4'>
-              <img 
-                src={xbotPic} 
-                className={`bot-image w-full ${bot === xbot ? 'border-orange-500 shadow-md' : ''}`} 
+              <button 
+                className={`py-3 rounded-xl border-2 font-medium transition-all ${bot === xbot ? 'border-orange-500 bg-orange-50 text-orange-700' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'}`} 
                 onClick={() => setBot(xbot)} 
-                alt='Avatar 1: XBOT'
-              />
-              <img 
-                src={ybotPic} 
-                className={`bot-image w-full ${bot === ybot ? 'border-orange-500 shadow-md' : ''}`} 
+              >
+                Male Avatar
+              </button>
+              <button 
+                className={`py-3 rounded-xl border-2 font-medium transition-all ${bot === ybot ? 'border-orange-500 bg-orange-50 text-orange-700' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'}`} 
                 onClick={() => setBot(ybot)} 
-                alt='Avatar 2: YBOT'
-              />
+              >
+                Female Avatar
+              </button>
             </div>
             
             <div className='mt-4'>
