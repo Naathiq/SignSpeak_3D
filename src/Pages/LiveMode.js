@@ -3,8 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-import xbot from '../Models/xbot/xbot.glb';
-import ybot from '../Models/ybot/ybot.glb';
+import xbot from '../../Model/xbot.glb';
+import ybot from '../../Model/ybot.glb';
 
 import * as words from '../Animations/words';
 import * as alphabets from '../Animations/alphabets';
@@ -269,13 +269,13 @@ function LiveMode() {
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-11/12 md:w-3/4 flex flex-col items-center pointer-events-none max-h-32 overflow-hidden">
             {interimTranscript && (
               <div className="text-lg md:text-2xl font-medium text-white bg-black/60 px-6 py-3 rounded-2xl backdrop-blur-md shadow-xl text-center mb-2 pointer-events-auto">
-                <span className="opacity-80">{text.length > 80 ? '...' + text.slice(-80) : text}</span>
+                <span className="opacity-80">{finalTranscript.length > 80 ? '...' + finalTranscript.slice(-80) : finalTranscript}</span>
                 <span className="text-orange-400"> {interimTranscript}</span>
               </div>
             )}
-            {!interimTranscript && text && (
+            {!interimTranscript && finalTranscript && (
               <div className="text-lg md:text-2xl font-medium text-white bg-black/60 px-6 py-3 rounded-2xl backdrop-blur-md shadow-xl text-center pointer-events-auto">
-                {text.length > 80 ? '...' + text.slice(-80) : text}
+                {finalTranscript.length > 80 ? '...' + finalTranscript.slice(-80) : finalTranscript}
               </div>
             )}
           </div>
@@ -298,6 +298,21 @@ function LiveMode() {
               >
                 Female
               </button>
+            </div>
+
+            <div className="mt-4 mb-6">
+               <label className='text-xs font-semibold text-gray-600 uppercase tracking-wider block mb-2'>Custom Avatar (.glb)</label>
+               <input 
+                 type="file" 
+                 accept=".glb,.gltf" 
+                 onChange={(e) => {
+                     const file = e.target.files[0];
+                     if (file) {
+                         setBot(URL.createObjectURL(file));
+                     }
+                 }}
+                 className='block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100'
+               />
             </div>
             
             <div className='space-y-4'>

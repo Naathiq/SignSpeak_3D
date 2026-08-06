@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Slider from 'react-input-slider';
-import xbot from '../Models/xbot/xbot.glb';
-import ybot from '../Models/ybot/ybot.glb';
+import xbot from '../../Model/xbot.glb';
+import ybot from '../../Model/ybot.glb';
 import * as words from '../Animations/words';
 import * as alphabets from '../Animations/alphabets';
 import { defaultPose } from '../Animations/defaultPose';
@@ -201,11 +201,11 @@ function ProcessVideo() {
       }
       
       const base64Data = await fileToBase64(videoFile);
-      const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY });
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const prompt = "Transcribe the audio in this video snippet and return a JSON array of words. Every object in the array MUST have the properties 'word' (string), 'start' (start time in seconds as number), and 'end' (end time in seconds as number). Only output the valid JSON array without any markdown formatting around it.";
       
       const response = await ai.models.generateContent({
-        model: 'gemini-1.5-flash',
+        model: 'gemini-3-flash-preview',
         contents: [
             { text: prompt },
             {
@@ -324,6 +324,21 @@ function ProcessVideo() {
               >
                 Female
               </button>
+            </div>
+
+            <div className="mt-4">
+               <label className='text-xs font-semibold text-gray-600 uppercase tracking-wider block mb-2'>Custom Avatar (.glb)</label>
+               <input 
+                 type="file" 
+                 accept=".glb,.gltf" 
+                 onChange={(e) => {
+                     const file = e.target.files[0];
+                     if (file) {
+                         setBot(URL.createObjectURL(file));
+                     }
+                 }}
+                 className='block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100'
+               />
             </div>
 
             <div className='mt-6 space-y-4'>

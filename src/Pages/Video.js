@@ -6,8 +6,8 @@ import Slider from 'react-input-slider';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-import xbot from '../Models/xbot/xbot.glb';
-import ybot from '../Models/ybot/ybot.glb';
+import xbot from '../../Model/xbot.glb';
+import ybot from '../../Model/ybot.glb';
 
 import * as words from '../Animations/words';
 import * as alphabets from '../Animations/alphabets';

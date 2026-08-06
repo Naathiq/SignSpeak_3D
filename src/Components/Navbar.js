@@ -24,6 +24,12 @@ function Navbar() {
                     {/* Desktop Menu */}
                     <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                         <Link 
+                            to='/sign-kit/dashboard' 
+                            className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${isActive('/sign-kit/dashboard') ? 'border-orange-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'}`}
+                        >
+                            Dashboard
+                        </Link>
+                        <Link 
                             to='/sign-kit/convert' 
                             className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${isActive('/sign-kit/convert') ? 'border-orange-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'}`}
                         >
@@ -72,6 +78,13 @@ function Navbar() {
             {isOpen && (
                 <div className="sm:hidden border-t border-gray-200">
                     <div className="pt-2 pb-3 space-y-1">
+                        <Link 
+                            to='/sign-kit/dashboard' 
+                            className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${isActive('/sign-kit/dashboard') ? 'bg-orange-50 border-orange-500 text-orange-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'}`}
+                            onClick={() => setIsOpen(false)}
+                        >
+                            Dashboard
+                        </Link>
                         <Link 
                             to='/sign-kit/convert' 
                             className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${isActive('/sign-kit/convert') ? 'bg-orange-50 border-orange-500 text-orange-700' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'}`}
