@@ -10,7 +10,7 @@ const Room = () => {
   const queryParams = new URLSearchParams(location.search);
   const name = queryParams.get("name") || "Guest";
   const role = queryParams.get("role") || "viewer";
-  const serverUrl = queryParams.get("serverUrl") || "/";
+  const serverUrl = queryParams.get("serverUrl") || import.meta.env.VITE_SERVER_URL || "/";
 
   const [peers, setPeers] = useState({});
   const [users, setUsers] = useState([]);
